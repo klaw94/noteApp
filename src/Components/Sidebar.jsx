@@ -4,9 +4,6 @@ export default function Sidebar(props) {
 
 
     const noteElements = props.notes.map((note) => {
-        const bodyJson = JSON.stringify(note.body);
-        const nPosition = bodyJson.indexOf("/n");
-        const title = note.body.slice(0, nPosition)
         return (
         <div key={note.id}>
             <div
@@ -16,7 +13,7 @@ export default function Sidebar(props) {
                 }`}
                 onClick={() => props.setCurrentNoteId(note.id)}
             >
-                <h4 className="text-snippet">{title}</h4>
+                <h4 className="text-snippet">{note.body.split("\n")[0]}</h4>
             </div>
         </div>
     )}
