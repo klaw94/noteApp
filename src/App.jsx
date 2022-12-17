@@ -15,7 +15,6 @@ function App() {
       localStorage.setItem("note", JSON.stringify(notes))
     }, [notes])
 
-
   function createNewNote() {
       const newNote = {
           id: nanoid(),
@@ -25,18 +24,31 @@ function App() {
       setCurrentNoteId(newNote.id)
   }
   
-  function updateNote(text) {
-      setNotes(oldNotes => oldNotes.map(oldNote => {
-          return oldNote.id === currentNoteId
-              ? { ...oldNote, body: text }
-              : oldNote
-      }))
-  }
+    function updateNote(text) {
+        //Set the new note on top
+        setNotes(oldNotes =>{
+            let updatedNoteArray = oldNotes.filter(function (oldNote){
+                  return oldNote.id === currentNoteId
+                });
+            let filteredNoteArray = oldNotes.filter(function (oldNote){
+                  return oldNote.id != currentNoteId
+            });
+            return [{...updatedNoteArray[0], body: text}, ...filteredNoteArray]
+        })
+    }
   
   function findCurrentNote() {
       return notes.find(note => {
           return note.id === currentNoteId
       }) || notes[0]
+  }
+
+  function deleteNote(event, noteId) {
+    event.stopPropagation()
+    setNotes(oldNotes=> oldNotes.filter(function (oldNote){
+            return oldNote.id != noteId
+        
+    }))
   }
   
   return (
@@ -54,6 +66,7 @@ function App() {
                   currentNote={findCurrentNote()}
                   setCurrentNoteId={setCurrentNoteId}
                   newNote={createNewNote}
+                  handleDelete={deleteNote}
               />
               {
                   currentNoteId && 
